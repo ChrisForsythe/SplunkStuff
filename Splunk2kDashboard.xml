@@ -15,7 +15,72 @@
       <html>
   <h3>Outdated Endpoints</h3>
   <p/>
-Use this panel to find any endpoints which are outdated and has checked into the system in the last 60 minutes
+Use this panel to find any endpoints which are outdated and has checked into the system in the last 60 minutes. From Splunk's documentation:
+
+<table>
+<tbody><tr>
+<th>Major version
+</th>
+<th>Minor version with patched file
+</th>
+<th>Released?
+</th>
+<th>Splunk platform upgrade instructions
+</th></tr>
+<tr>
+<td>6.6
+</td>
+<td>6.6.12.1
+</td>
+<td>Yes
+</td>
+<td><a class="external text" href="http://docs.splunk.com/Documentation/Splunk/6.6.12/Installation/HowtoupgradeSplunk">Splunk Enterprise</a>
+</td></tr>
+<tr>
+<td>7.0
+</td>
+<td>7.0.13.1<br />7.0.12 and 7.0.13 are Splunk Cloud-only
+</td>
+<td>Yes
+</td>
+<td><a class="external text" href="http://docs.splunk.com/Documentation/Splunk/7.0.13/Installation/HowtoupgradeSplunk">Splunk Enterprise</a>
+</td></tr>
+<tr>
+<td>7.1
+</td>
+<td>7.1.10
+</td>
+<td>Yes
+</td>
+<td><a class="external text" href="http://docs.splunk.com/Documentation/Splunk/7.1.10/Installation/HowtoupgradeSplunk">Splunk Enterprise</a>
+</td></tr>
+<tr>
+<td>7.2
+</td>
+<td>7.2.9.1
+</td>
+<td>Yes
+</td>
+<td><a class="external text" href="http://docs.splunk.com/Documentation/Splunk/7.2.9/Installation/HowtoupgradeSplunk">Splunk Enterprise</a>
+</td></tr>
+<tr>
+<td>7.3
+</td>
+<td>7.3.3
+</td>
+<td>Yes
+</td>
+<td><a class="external text" href="http://docs.splunk.com/Documentation/Splunk/7.3.3/Installation/HowtoupgradeSplunk">Splunk Enterprise</a>
+</td></tr>
+<tr>
+<td>8.0
+</td>
+<td>8.0.1
+</td>
+<td>Yes
+</td>
+<td><a class="external text" href="http://docs.splunk.com/Documentation/Splunk/8.0.1/Installation/HowtoupgradeSplunk">Splunk Enterprise</a>
+</td></tr></tbody></table>
 </html>
       <table>
         <search>
