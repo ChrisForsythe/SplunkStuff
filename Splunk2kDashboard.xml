@@ -1,0 +1,64 @@
+<dashboard>
+  <label>Splunk2k Status</label>
+  <description>Determine if a deployment has issues resolved with the Splunk 2020 date problem</description>
+  <row>
+    <panel>
+      <html>
+  <h3>Splunk 2k</h3>
+  <p/>
+  Description: Splunk has released a notice detailing problems with regards to the Date Time starting in 2020. This dashboard is meant to give you a checklist of items to resolve, but is not all encompassing. For a full list of steps to resolve this issue please read <a href="https://docs.splunk.com/Documentation/Splunk/latest/ReleaseNotes/FixDatetimexml2020">this page</a> on Splunk's documentation site for more details.
+</html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+  <h3>Outdated Endpoints</h3>
+  <p/>
+Use this panel to find any endpoints which are outdated and has checked into the system in the last 60 minutes
+</html>
+      <table>
+        <search>
+          <query>
+            <![CDATA[
+index=_internal source=*metrics.log group=tcpin_connections 
+| eval sourceHost=if(isnull(hostname), sourceHost,hostname) 
+| rename connectionType as connectType 
+| eval connectType=case(fwdType=="uf","Universal Forwarder", fwdType=="lwf", "lightwt fwder",fwdType=="full", "heavy fwder", connectType=="cooked" or connectType=="cookedSSL","Splunk fwder", connectType=="raw" or connectType=="rawSSL","legacy fwder") 
+| eval version=if(isnull(version),"pre 4.2",version) 
+| rex field="version" "(?<major>\d\.\d)\.(?<minor>.*)" 
+| eval State = case(major = 6.6 AND minor < 12.1, "Version is affected",
+    major = 6.6 and minor >= 12.1, "Version is not affected",
+    major = 7.0 AND minor < 13.1, "Version is affected",
+    major = 7.0 and minor >= 13.1, "Version is not affected",
+    major = 7.1 AND minor < 10, "Version is affected",
+    major = 7.1 and minor >= 10, "Version is not affected",
+    major = 7.2 AND minor < 9.1, "Version is affected",
+    major = 7.2 and minor >= 9.1, "Version is not affected",
+    major = 7.3 AND minor < 3, "Version is affected",
+    major = 7.3 and minor >= 3, "Version is not affected",
+    major = 8.0 AND minor < 1, "Version is affected",
+    major = 8.0 and minor >= 1, "Version is not affected") 
+| where State="Version is affected" 
+| rename version as Version sourceHost AS Host 
+| sort Version 
+| dedup Host 
+| stats count by Host,Version,connectType,os, State 
+| fields - count
+]]>
+          </query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">30</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
