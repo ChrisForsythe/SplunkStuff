@@ -125,5 +125,49 @@ index=_internal source=*metrics.log group=tcpin_connections
         <option name="wrap">true</option>
       </table>
     </panel>
+    
+    
+    
+        <panel>
+      <html>
+  <h3>Affected UNIX EPOCH Timestamp Data Sources</h3>
+  <p/>
+<p>Use this panel to find any data sources will be affected by the UNIX EPOCH time stamp moving from 1,500,000,000 seconds series to the 1,600,000,000 seconds series in September. Per Splunk:</p>
+<br />
+<p>Beginning on January 1, 2020, un-patched Splunk platform instances will be unable to recognize timestamps from events where the date contains a two-digit year. This means data that meets this criteria will be indexed with incorrect timestamps.
+</p>
+<br />
+<br />
+<p>Beginning on September 13, 2020 at 12:26:39 PM Coordinated Universal Time (UTC), un-patched Splunk platform instances will be unable to recognize timestamps from events with dates that are based on Unix time, due to incorrect parsing of timestamp data.
+</p>
+
+
+</html>
+      <table>
+        <search>
+          <query>
+            <![CDATA[
+index=*
+| dedup index, sourcetype
+| fields index, sourcetype, timeendpos,timestartpos, _raw
+| eval timestamp=substr(_raw, timestartpos+1, timeendpos-timestartpos)
+| regex timestamp="(15\d{6}(\.\d+)?)"
+| stats count by index, sourcetype, timestamp
+| fields - count
+]]>
+          </query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">30</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
   </row>
 </dashboard>
