@@ -1,2 +1,2 @@
 # SplunkStuff
-A repository for my splunk stuff
+A repository for sharing splunk code. SPL, SimpleXML, whatever else. 
