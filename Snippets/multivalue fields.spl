@@ -1,0 +1,9 @@
+| makeresults count=2
+| streamstats count
+| eval event = case(count=1,"Failed,Succeeded",count=2,"Failed,Failed,Succeeded")
+| eval failed_count = case(count=1,"1,",count=2,"1,1,")
+| eval event = split(event,",")
+| eval failed_count =  split(failed_count,",")
+| eventstats  sum(failed_count) by event
+
+```Working with a multivalue field from a transaction to sum the field and create a new field```
