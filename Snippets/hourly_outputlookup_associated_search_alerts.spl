@@ -1,28 +1,18 @@
-`You ideally have two searches. One search that runs and creates an hourly look at failures.
-Example:`
+```You ideally have two searches. One search that runs and creates an hourly look at failures.```
 
 | inputlookup failures.csv
-| append [ search
-earliest=-h@h latest=@h searching for things blah failures | stats count by host | eval date=strftime(now(),"%F:%H")
-]
+| append 
+    [ search
+earliest=-h@h latest=@h searching for things blah failures | stats count by host | eval date=strftime(now(),"%F:%H")]
 | eval filter=round(strptime(date,"%F:%H"),0), now=round(now(),0) | where date>now-5400000
 | fields date host count
 | outputlookup failures.csv
 
-`this runs every hour at the 5 or 7 minute mark and says, “Alright, what’s in the lookup right now? lets add some new rows, by taking a count by host and labeling the date as %F:%H or the hour it happened. Then do a little math to convert the date into EPOCH, and only show anything within the last 25 hours. trim down the fields to date, host, and count, and write the lookup back out to the lookup (edited)` 
+```This runs every hour at the 5 or 7 minute mark and says, “Alright, what’s in the lookup right now? lets add some new rows, by taking a count by host and labeling the date as %F:%H or the hour it happened. Then do a little math to convert the date into EPOCH, and only show anything within the last 25 hours. trim down the fields to date, host, and count, and write the lookup back out to the lookup (edited)``` 
 
 
-`From here you’d write a search that looks for hosts with >25 failures in an hour`
+```From here you’d write a search that looks for hosts with >25 failures in an hour```
 
 | inputlookup failures.csv | where count>=25 | fields date, host, count
 
-`and alert when you get results.`
-
-
-`that search could run every hour a few minutes after your failure search if you wanted to. or you could run it every 5 minutes in case you wanted to create a tighter search time for populating the lookup
-
-`Rename a lookup`
-
-`But if you really want to rename the actual CSV, the easiest way is to copy it to a new file like so:``` 
-
-| inputlookup oldname.csv | outputlookup newname.csv and then just delete the old file
+```Then alert when you get results.```
