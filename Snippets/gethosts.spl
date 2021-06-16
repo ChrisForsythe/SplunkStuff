@@ -1,19 +1,21 @@
 ```Different ways to get hosts within Splunk```
 Test change
-
 ```
 //This approach uses metadata, which is a lesser used command in splunk. It is faster than searching _internal in some instances.
-
-metadata needs to be scheduled to run in the time picker. Scheduled job should be set to a cron, just crontab.guru to build cronjobs. earliest and latest inline will not work.````
-
+metadata needs to be scheduled to run in the time picker. Scheduled job should be set to a cron, just crontab.guru to build cronjobs. earliest and latest inline will not work.```` 
 | metadata type=hosts index=_internal 
-| streamstats latest(*) AS * BY host 
-| eval twodaysTime=relative_time(now(), "-2d@d") 
+| streamstats 
+    latest(*) AS * 
+    BY host 
+| eval 
+    twodaysTime=relative_time(now(), "-2d@d") 
 | foreach *Time 
     [ convert ctime(<<FIELD>>)] 
 | where lastTime>twodaysTime 
 | rex field=host "^(?<name>[^.]+)" 
-| eval name=lower(name) 
-| fields name *Time
+| eval 
+    name=lower(name) 
+| fields 
+    name,
+    *Time 
 | dedup name
-

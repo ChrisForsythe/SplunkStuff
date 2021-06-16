@@ -1,18 +1,17 @@
-```You ideally have two searches. One search that runs and creates an hourly look at failures.```
-
-| inputlookup failures.csv
+```You ideally have two searches. One search that runs and creates an hourly look at failures.``` 
+| inputlookup failures.csv 
 | append 
     [ search
-earliest=-h@h latest=@h searching for things blah failures | stats count by host | eval date=strftime(now(),"%F:%H")]
-| eval filter=round(strptime(date,"%F:%H"),0), now=round(now(),0) | where date>now-5400000
-| fields date host count
+        earliest=-h@h latest=@h searching for things blah failures 
+    | stats count by host 
+    | eval date=strftime(now(),"%F:%H")] 
+| eval filter=round(strptime(date,"%F:%H"),0), now=round(now(),0) 
+| where date>now-5400000 
+| fields date host count 
 | outputlookup failures.csv
-
-```This runs every hour at the 5 or 7 minute mark and says, “Alright, what’s in the lookup right now? lets add some new rows, by taking a count by host and labeling the date as %F:%H or the hour it happened. Then do a little math to convert the date into EPOCH, and only show anything within the last 25 hours. trim down the fields to date, host, and count, and write the lookup back out to the lookup (edited)``` 
-
-
-```From here you’d write a search that looks for hosts with >25 failures in an hour```
-
-| inputlookup failures.csv | where count>=25 | fields date, host, count
-
-```Then alert when you get results.```
+    ```This runs every hour at the 5 or 7 minute mark and says, “Alright, what’s in the lookup right now? lets add some new rows, by taking a count by host and labeling the date as %F:%H or the hour it happened. Then do a little math to convert the date into EPOCH, and only show anything within the last 25 hours. trim down the fields to date, host, and count, and write the lookup back out to the lookup (edited)``` 
+    ```From here you’d write a search that looks for hosts with >25 failures in an hour``` 
+| inputlookup failures.csv 
+| where count>=25 
+| fields date, host, count
+    ```Then alert when you get results.```
