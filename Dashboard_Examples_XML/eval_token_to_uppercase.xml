@@ -1,0 +1,24 @@
+```Use this sample dashboard to eval token to upper case```
+
+<form>
+  <label>wedge22 - Eval Token Upper</label>
+  <fieldset submitButton="false">
+    <input type="text" token="words" searchWhenChanged="true">
+      <label>Enter Text:</label>
+      <change>
+        <eval token="upperWords">upper($words$)</eval>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <single>
+        <search>
+          <query>
+            | makeresults | eval message="$upperWords$" | table message
+          </query>
+        </search>
+      </single>
+    </panel>
+  </row>
+</form>
