@@ -1,0 +1,33 @@
+```Use this sample dashboard to color code columns in a table viz```
+
+<dashboard>
+<label>Table column color formatting</label>
+<row><panel>
+      <title>Table column color formatting in XML</title>
+      <table>
+        <search>
+          <query>| makeresults
+| eval data="abc01,90%,high;abc02,80%,medium;abc03,40%,low;"
+| makemv data delim=";"
+| mvexpand data
+| makemv data delim=","</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="data">
+          <scale type="category">high, medium, low</scale>
+          <colorPalette type="expression">if (match(value,"high"), "#ff0000", if(match(value,"medium"),"#ffff00", if(match(value,"low"),"#00ff00","#B6C75A")))</colorPalette>
+        </format>
+      </table>
+    </panel>
+    </row>
+</dashboard>
