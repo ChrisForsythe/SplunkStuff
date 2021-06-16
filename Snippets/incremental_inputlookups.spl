@@ -1,0 +1,15 @@
+``` Use this spl to append data to an existing lookup```
+
+index=foo EventCode IN (123,456) 
+| stats max(eval(if(EventCode=123,_time,null())) as most_recent_disable, max(eval(if(EventCode=456,_time,null()))) as most_recent_enable by host 
+| inputlookup append=true lookup1
+| stats max(most_recent_disable) as most_recent_disable, max(most_recent_enable) as most_recent_enable by host
+| outputlookup lookup1
+
+```Run this once ie over 90 days```
+
+```Then run it every hour over last 1 hour```
+
+```Then "newly disabled, more than 24 hours ago" can be found using below search```
+
+| inputlookup lookup1 | where most_recent_disable > most_recent_enable | where (now() - most_recent_disable) > 86400
