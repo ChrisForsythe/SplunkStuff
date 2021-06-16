@@ -1,0 +1,36 @@
+```Use this sample dashboard to create an employee timetracker example panel```
+
+
+<dashboard>
+  <label>Timetracker</label>
+  <row>
+    <panel>
+      <viz type="timeline_app.timeline">
+        <title>Employee Timetracker</title>
+        <search>
+          <query>| makeresults
+ | eval data="abc 2019-01-15 2019-01-20;cde 2019-02-04 2019-02-14;efg 2019-03-05 2019-03-10;"
+ | makemv data delim=";"
+ | mvexpand data
+ | makemv data delim=" "
+ | eval "employee"=mvindex(data,0), start_date=mvindex(data,1), end_date=mvindex(data,2)
+ | eval _time = strptime(start_date, "%Y-%m-%d") 
+ | eval end_time = strptime(end_date, "%Y-%m-%d") 
+ | eval duration = (end_time - _time) * 1000
+ | stats count by _time, duration, employee 
+ | table _time employee duration</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="timeline_app.timeline.axisTimeFormat">SECONDS</option>
+        <option name="timeline_app.timeline.colorMode">categorical</option>
+        <option name="timeline_app.timeline.maxColor">#DA5C5C</option>
+        <option name="timeline_app.timeline.minColor">#FFE8E8</option>
+        <option name="timeline_app.timeline.numOfBins">6</option>
+        <option name="timeline_app.timeline.tooltipTimeFormat">SECONDS</option>
+        <option name="timeline_app.timeline.useColors">0</option>
+      </viz>
+    </panel>
+  </row>
+</dashboard>
