@@ -1,0 +1,13 @@
+```Using accum and calculating with mod to make a grid menu from a list```
+
+| inputlookup mylookup
+| stats count by type
+| eventstats count as _tot
+| eval modval=ceil(sqrt(_tot))
+| eval num=1
+| accum num
+| eval num=num-1
+| eval mod-floor(num/modval)
+| eval type.{mod}=type
+| fields - modval mod num type count
+| stats list(*) as *
