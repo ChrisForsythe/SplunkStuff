@@ -1,0 +1,48 @@
+```Find traffic from a specific country through firewall events and src_ip```
+
+```Data model option 1```
+
+| tstats sum(All_Traffic.bytes) as bytes, count as eventCount FROM datamodel=Network_Traffic ```WHERE earliest=-1d@d latest=now``` by All_Traffic.dest, All_Traffic.dest_port, All_Traffic.src_ip _time All_Traffic.action 
+| rename All_Traffic.dest_port AS dest_port,
+    All_Traffic.dest AS dest_ip,
+    All_Traffic.src_ip AS src_ip,
+    All_Traffic.action AS action
+	
+```Data model option 2```
+	
+| tstats sum(All_Traffic.bytes) as bytes, count as eventCount FROM datamodel=Network_Traffic WHERE earliest=-1d@d latest=now All_Traffic.src_ip IN (5.153.26.76/31 , 5.153.31.168/30 , 5.153.53.120/29 ) by All_Traffic.src_ip 
+| rename All_Traffic.* as * 
+	
+	
+```No data model option```
+
+| tstats sum(All_Traffic.bytes) as bytes, count as eventCount FROM datamodel=Network_Traffic ```WHERE earliest=-1d@d latest=now``` by All_Traffic.dest, All_Traffic.dest_port, All_Traffic.src_ip _time All_Traffic.action 
+| rename All_Traffic.dest_port AS dest_port,
+    All_Traffic.dest AS dest_ip,
+    All_Traffic.src_ip AS src_ip,
+    All_Traffic.action AS action 
+| fields src_ip dest_ip dest_port action 
+| fields - _time 
+| where isnotnull(dest_port) 
+| eval baz=if(cidrmatch("10.0.0.0/8",src_ip),coalesce(dest_ip,src_ip),baz) 
+| eval baz=if(cidrmatch("10.0.0.0/8",dest_ip),coalesce(src_ip,dest_ip),baz) 
+| fillnull baz 
+| iplocation baz 
+| search Country="Russia"
+| dedup dest_port 
+| mvcombine dest_port delim="," 
+| eval dest_port=mvsort(mvmap(dest_port,printf("%06d",tonumber(dest_port)))) 
+| eval dest_port=mvmap(dest_port,printf("%00d",tonumber(dest_port))) 
+| eval dest_port_orig=dest_port 
+| eval temp=mvmap(mvindex(dest_port,0,-1), 
+    if(
+    tonumber(mvindex(dest_port_orig,mvfind(dest_port_orig, "^" + dest_port + "$")-1)) = tonumber(dest_port)-1 AND 
+    tonumber(mvindex(dest_port_orig,mvfind(dest_port_orig, "^" + dest_port + "$")+1)) = tonumber(dest_port)+1
+    ,"-",dest_port)
+   ) 
+| eval output=mvjoin(temp,",") 
+| rex mode=sed field=output "s/,-(,-)*,/-/g" 
+| fields - dest_port dest_port_orig, temp 
+| rex mode=sed field=output "s/,/\n/g" 
+| rename output AS dest_ports
+| sort action
