@@ -1,17 +1,36 @@
-```Generate 0 data after a stats with this method for the number of days you need 0 results```
-
+```Generate 0 data after a stats with this method for the number of days you need 0 results``` 
 | append 
-[| gentimes start=-14 end=0 increment=1d 
-| eval _time=starttime, value=0, field="STRING", field2="STRING", field3="STRING"
-| fields _time, value, field, field2, field3] 
-
-
-
-
-
-``` THIS IS UNDOCUMENTED DO NOT USE IT JUST LEAVING IT HERE ```
-```
+    [| gentimes start=-14 end=0 increment=1d 
+    | eval
+        _time=starttime, 
+        value=0, 
+        field="STRING", 
+        field2="STRING", 
+        field3="STRING" 
+    | fields 
+        _time, 
+        value, 
+        field, 
+        field2, 
+        field3] 
+    ``` THIS IS UNDOCUMENTED DO NOT USE IT JUST LEAVING IT HERE ```
+    ``` 
 | multireport 
-    [| eval value=0, field="STRING", field2="STRING", field3="STRING", _time=relative_time(now(), "-1d@d")] 
-    [| eval value=0, field="STRING", field2="STRING", field3="STRING", _time=relative_time(now(), "-2d@d")] 
-    [| eval value=0, field="STRING", field2="STRING", field3="STRING", _time=relative_time(now(), "-3d@d")] ``` 
+    [| eval 
+        value=0, 
+        field="STRING", 
+        field2="STRING", 
+        field3="STRING", 
+        _time=relative_time(now(), "-1d@d")] 
+    [| eval 
+        value=0, 
+        field="STRING", 
+        field2="STRING", 
+        field3="STRING", 
+        _time=relative_time(now(), "-2d@d")] 
+    [| eval 
+        value=0, 
+        field="STRING", 
+        field2="STRING", 
+        field3="STRING",
+        _time=relative_time(now(), "-3d@d")] ```
