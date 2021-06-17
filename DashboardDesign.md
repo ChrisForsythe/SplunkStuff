@@ -34,7 +34,7 @@ search" is for.
 
 ## Document your dashboards
 Dashboards should be documented.  There's several ways to do it (see
-[DocumentDashboards.md] for several), but another way is to have a link in
+[DocumentDashboards.md](DocumentDashboards.md) for several), but another way is to have a link in
 your dashboard to external documentation, such as a wiki link.
 
 You may need two types of documentation, documentation for users, and
