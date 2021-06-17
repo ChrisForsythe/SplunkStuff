@@ -21,7 +21,7 @@ Then, down below, create a hidden row of an HTML panel with your documentation:
           <h1>TFM</h1>
           <p>This is The Fine Manual (TFM).  You need to Write TFM so someone
              else can Read TFM.</p>
-          <p>Remember, every paragraph tag must be closed in Splunk XML.
+          <p>Remember, every paragraph tag must be closed in Splunk XML.</p>
         </html>
       </panel>
     </row>
