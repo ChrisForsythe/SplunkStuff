@@ -1,4 +1,5 @@
 <dashboard theme="dark" script="splunk_monitoring_console:common_control.js">
+  <!-- Note the above script reference.  That is very important later.  -->
   <label>Testing</label>
   <search id="resultpopup">
     <query>| makeresults count=55
@@ -95,13 +96,22 @@ That token setting is what triggers the other panel to appear
 ]]>
           </query>
         </search>
+        <!-- While the default may be good, setting an explicit row drilldown
+           option makes it easier to read and more explicit. -->
         <option name="drilldown">row</option>
         <drilldown>
           <set token="result">$row.result$</set>
         </drilldown>
       </table>
     </panel>
-    <panel depends="$result$">
+    <!-- This is the side panel.  Notice, we make it depend on the token set
+      by the drilldown click, and the value is whatever the user clicked on
+      to filter the base search.  By using a base search, we make this popup
+      panel fast.
+
+      The use of an id tag allows us to later add CSS to easily control the
+      popup panel. -->
+    <panel depends="$result$" id="popuppanel">
       <title>Popup</title>
       <table>
       <search base="resultpopup">
@@ -117,6 +127,11 @@ a button.
       <option name="totalsRow">true</option>
       <option name="count">15</option>
       </table>
+        <!-- This little snippet of html causes a small link to appear to
+          close this panel when clicked.  It requires the JS above.  Note,
+          this borrowed JavaScript from the monitoring console, is not directly
+          available in Splunk Cloud.  Instead, you must add the Dashboard
+          Examples app and use a JS from there instead.  -->
         <html>
           <p><a data-unset-token="result">Close this table</a></p>
         </html>
