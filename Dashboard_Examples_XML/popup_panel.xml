@@ -1,0 +1,125 @@
+<dashboard theme="dark" script="splunk_monitoring_console:common_control.js">
+  <label>Testing</label>
+  <search id="resultpopup">
+    <query>| makeresults count=55
+| eval result=random()%3
+| eval result=case(
+result=="0","low",
+result=="1","medium",
+result=="2","high")
+| eval moredetails=random()%100
+    </query>
+    <earliest>-1d@d</earliest>
+    <latest>now</latest>
+  </search>
+  <search id="basepanel">
+          <query><![CDATA[
+```
+Fake up two simple fields.  Note, this is done in a base search
+```
+| makeresults count=200
+| eval result=random()%3
+| eval area=random()%5
+| eval result=case(
+result=="0","low",
+result=="1","medium",
+result=="2","high")
+| eval area=case(
+area=="0","US/Eastern",
+area=="1","US/Central",
+area=="2","US/Mountain",
+area=="3","US/Pacific",
+area=="4","US/Hawaii")]]>
+</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>  
+  <row>
+    <panel>
+      <single>
+        <title>Count by high</title>
+        <search base="basepanel">
+          <query>
+| search result="high"
+| stats count
+</query>
+        </search>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Count by medium</title>
+        <search base="basepanel">
+          <query>
+<![CDATA[
+```
+This search uses the base search above, making it very simple
+```
+| search result="medium"
+| stats count]]>
+</query>
+        </search>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Count by low</title>
+        <search base="basepanel">
+          <query>
+<![CDATA[
+```
+This search uses the base search above, making it very simple
+```
+| search result="low"
+| stats count]]>
+</query>
+        </search>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Table</title>
+        <search base="basepanel">
+          <query>
+<![CDATA[
+```
+What is interesting here is not the search, which is trivial, but the way
+the drilldown is done.  Note, it is a row level drilldown, using a single field
+regardless of which one is clicked on, and just sets a token.
+
+That token setting is what triggers the other panel to appear
+```
+| stats count AS num_per_area by result,area
+]]>
+          </query>
+        </search>
+        <option name="drilldown">row</option>
+        <drilldown>
+          <set token="result">$row.result$</set>
+        </drilldown>
+      </table>
+    </panel>
+    <panel depends="$result$">
+      <title>Popup</title>
+      <table>
+      <search base="resultpopup">
+        <query><![CDATA[
+```
+This panel, as indicated, depends on the drilldown being clicked.  Note, it
+uses a weird syntax to create a link that closes the panel.  It could also be
+a button.
+```
+| search result="$result$"]]>
+        </query>
+      </search>
+      <option name="totalsRow">true</option>
+      <option name="count">15</option>
+      </table>
+        <html>
+          <p><a data-unset-token="result">Close this table</a></p>
+        </html>
+    </panel>
+  </row>
+</dashboard>
