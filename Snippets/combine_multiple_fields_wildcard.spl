@@ -1,0 +1,6 @@
+| inputlookup testdata.csv 
+```Testdata has 6 fields named Number_One through Number_Six. Here is how to combine each of the Number_ fields into one```
+| foreach Number* 
+    [ eval Numbers=mvappend(fields, '<<FIELD>>')]
+| mvexpand fields
+| fields - Number_*
