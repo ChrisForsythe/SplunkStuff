@@ -1,6 +1,5 @@
-```Using accum and calculating with mod to make a grid menu from a list```
-
 | inputlookup mylookup
+```Using accum and calculating with mod to make a grid menu from a list```
 | stats count by type
 | eventstats count as _tot
 | eval modval=ceil(sqrt(_tot))
