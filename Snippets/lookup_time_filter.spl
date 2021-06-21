@@ -1,0 +1,8 @@
+``` Use this spl to filter an inputlookup based on searchtime```
+
+| inputlookup mylookup.csv WHERE [
+    | makeresults count=1
+    | addinfo
+    | eval search="( ( _time >= " . info_min_time . " ) AND ( _time < " . replace(info_max_time, "\+Infinity", "2147483647") . " ) )"
+    | table search
+]
