@@ -24,7 +24,7 @@ another stylesheet potentially (advanced trick).
 
 Define variables by
 
-{code}
+```
 :root {
   --bg1: #303030;
   --fg-link: #9696ff;
@@ -32,7 +32,7 @@ Define variables by
   --bg-highlight: 37378a;
   --highlight: var(--bg-highlight);
 }
-{code}
+```
 
 As suggested above, you use a variable by the syntax
 
