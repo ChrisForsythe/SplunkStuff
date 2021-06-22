@@ -3,6 +3,73 @@
 Just because you can dashboard doesn't make the dashboard useful.  Some random
 notes here.
 
+## Identify your panels
+It is a good habit to be into to put an id attribute on your panels.  Why?
+So you can apply specific stylings readily to them, as well as reference that
+specific panel in documentation later.
+
+    <panel id="somelabelhere" ...>
+
+## Styling
+Stylesheets are very valuable, and can be added to your app.  They can
+also readily be used to set the below recommendations without having to
+think about it.  Do so.  
+When creating a stylesheet there are several things to keep in mind.
+
+### Use variables
+
+Variables allow you to use common items throughout your stylesheet.  If
+multiple stylesheets are combined, you can even reference the varaible in
+another stylesheet potentially (advanced trick).
+
+Define variables by
+
+```
+:root {
+  --bg1: #303030;
+  --fg-link: #9696ff;
+  --fg1: #dadada;
+  --bg-highlight: 37378a;
+  --highlight: var(--bg-highlight);
+}
+```
+
+As suggested above, you use a variable by the syntax
+
+    var(--variablenamehere)
+
+Yes, variables should be defined in a **:root:** section and always start with
+two dashes.  
+
+### Unique IDs
+
+So you followed the above advice and gave a unique ID to each panel, but want
+common stylings for panels with the same naming pattern?  Let us assume you
+named these common panels with the pattern mygraph-*foo*, mygraph-*bar*, mygraph-*baz*...
+
+```
+[class*='mygraph-'] {
+    background-color: var(--bg-mygraph) !important;
+}
+```
+
+Wildcards are your friend.
+### Cloud
+
+Splunk Cloud complicates things, because Stylesheets cannot be directly (yet)
+uploaded via the GUI.  So, a good habit:  Work up your styles in a single
+dashboard that does a giant hidden HTML to create all the styles in one
+`<style>` section.  Once done, then create a private app that is hidden but
+holds your CSS.  Now, your other dashboads can reference that CSS via
+
+    <form stylesheet="myhiddenapp:mystylesheet.css">
+
+If you want dark theme as your basis, you can combine the attributes:
+
+    <form stylesheet="myhiddenapp:mystylesheet.css" theme="dark">
+
+And work from there.
+
 ## Scrolling
 Horizontal scrolling should not be required.  Do not assume your user has 
 any larger than a 1080 display.
