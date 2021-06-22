@@ -45,13 +45,13 @@ two dashes.
 
 So you followed the above advice and gave a unique ID to each panel, but want
 common stylings for panels with the same naming pattern?  Let us assume you
-named these common panels with the pattern mygraph-foo, mygraph-bar, mygraph-baz...
+named these common panels with the pattern mygraph-*foo*, mygraph-*bar*, mygraph-*baz*...
 
-{code}
+```
 [class*='mygraph-'] {
     background-color: var(--bg-mygraph) !important;
 }
-{code}
+```
 
 Wildcards are your friend.
 ### Cloud
