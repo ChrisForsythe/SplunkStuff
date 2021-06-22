@@ -1,0 +1,28 @@
+<row depends="$alwaysHideCSSPanel$">
+  <panel>
+    <html>
+    <style>
+      #panel_server h1 {
+                            color: white; 
+                            font: bold 52px Helvetica, Arial, Sans-Serif;
+                            text-shadow:    1px 1px #336699, 
+                                            2px 2px #fe4902, 
+                                            3px 3px #fe4902;
+      
+      }
+    </style>
+  </html>
+  </panel>
+
+  <panel>
+    <html>
+       <style>
+       #tableWithDrilldown table tbody tr td,#tableWithDrilldown table thead th a{
+         color: white !important;
+         border: none;
+         border-collapse: collapse;
+
+       }
+        </style>
+  </html>
+</row>
