@@ -1,13 +1,28 @@
 <row depends="$alwaysHideCSSPanel$">
   <panel>
     <html>
+    <!-- Generally, this should be in a separate dedicated stylesheet.
+         Recreated inline here just to demonstrate technique.  See
+         DashboardDesign.md section on stylesheets.
+      -->
     <style>
+      :root {
+          --fg-white: white;
+          --fg-shadow1: #336699;
+          --fg-shadow2: #fe4902;
+          --fontsize-title: 52px;
+          --fontfamily: Helvetica, Arial, Sans-Serif;
+      }
       #panel_server h1 {
-                            color: white; 
-                            font: bold 52px Helvetica, Arial, Sans-Serif;
-                            text-shadow:    1px 1px #336699, 
-                                            2px 2px #fe4902, 
-                                            3px 3px #fe4902;
+                            color: var(--fg-white); 
+                            <!-- Splitting the font tag to multiple tags -->
+                            <!-- font: bold 52px Helvetica, Arial, Sans-Serif; -->
+                            font-size: var(--fontsize-title);
+                            font-weight: bold;
+                            font-family: var(--fontfamily);
+                            text-shadow:    1px 1px var(--fg-shadow1);
+                                            2px 2px var(--fg-shadow2);
+                                            3px 3px #var(--fg-shadow2);
       
       }
     </style>
