@@ -1,0 +1,12 @@
+```Find renamed sourcetypes via REST```
+
+```Option 1 to group by app```
+| rest /servicesNS/-/-/data/props/sourcetype-rename
+| fields stanza title value type "eai:acl.sharing" "eai:acl.removable" "eai:acl.perms.write" attribute author "eai:acl.app"
+| stats values(*) AS * BY "eai:acl.app"
+
+```Option to prep for a lookup table```
+| rest splunk_server=* /servicesNS/-/-/data/props/sourcetype-rename
+| dedup id
+| rename title AS rename_from, value AS rename_to, eai:acl.app AS app
+| table app, stanza, rename_from, rename_to, updated
