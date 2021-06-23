@@ -25,7 +25,7 @@
       </search>
     </input>
     <input type="radio" token="hundredths">
-      <label>Tenths</label>
+      <label>Hundredths</label>
       <fieldForValue>ansB</fieldForValue>
       <fieldForLabel>ansB</fieldForLabel>
       <search>
