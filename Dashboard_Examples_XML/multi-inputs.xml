@@ -1,0 +1,59 @@
+<form theme="dark">
+  <label>inputs</label>
+  <fieldset submitButton="false">
+    <input type="radio" token="ones">
+      <label>Ones</label>
+      <fieldForValue>ansA</fieldForValue>
+      <fieldForLabel>ansA</fieldForLabel>
+      <search>
+        <query><![CDATA[
+| makeresults
+| eval ansA=mvrange(0,10,1)
+| mvexpand ansA]]>
+        </query>
+      </search>
+    </input>
+    <input type="radio" token="tenths">
+      <label>Tenths</label>
+      <fieldForValue>ansB</fieldForValue>
+      <fieldForLabel>ansB</fieldForLabel>
+      <search>
+        <query><![CDATA[
+| makeresults
+| eval ansB=mvrange($ones$,$ones$+1,0.1)
+| mvexpand ansB]]></query>
+      </search>
+    </input>
+    <input type="radio" token="hundredths">
+      <label>Hundredths</label>
+      <fieldForValue>ansB</fieldForValue>
+      <fieldForLabel>ansB</fieldForLabel>
+      <search>
+        <query><![CDATA[
+| makeresults
+| eval ansB=mvrange($tenths$,$tenths$+0.1,0.01)
+| mvexpand ansB]]></query>
+      </search>
+    </input>
+    <input type="checkbox" token="showdocs">
+      <label>Show documentation?</label>
+      <choice value="true">Yes?</choice>
+      <delimiter> </delimiter>
+    </input>
+  </fieldset>
+  <row depends="$hundredths$">
+    <panel>
+      <title>You picked</title>
+      <single>
+        <search>
+          <query><![CDATA[
+        | makeresults
+        | eval result="$hundredths$"
+        | fields - _time]]>
+          </query>
+        </search>
+        <option name="numberPrecision">0.00</option>
+      </single>
+    </panel>
+  </row>
+</form>
