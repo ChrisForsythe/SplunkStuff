@@ -1,0 +1,6 @@
+``` Have users run this snippet to find what roles they are a member of.
+    Requires the rest_properties_get capability.  Very useful to debug
+    why a user is not able to see a dashboard or an index.```
+| rest /services/authentication/current-context
+| fields roles
+

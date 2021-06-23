@@ -1,0 +1,6 @@
+``` Find the interesting and active indxes and sourcetypes ```
+| tstats count 
+  WHERE index=* 
+  BY index,sourcetype
+| sort - count
+
