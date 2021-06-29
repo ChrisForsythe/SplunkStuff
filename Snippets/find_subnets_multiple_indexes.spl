@@ -1,0 +1,33 @@
+```This is more to show how to use multisearch and not so much much how to do anything with actual subnets.
+Splunk would not know what a subnet is based on this search, however you could use it to do this if you wanted to. It would be slow...``` 
+| multisearch 
+    [ search index::index1 ip_address=* 
+    | fields ip_address index _time ] 
+    [ search index::index2 sourcetype=linux:audit src_ip=* 
+    | fields src_ip _time index ] 
+    [ search index::index3 src_ip=* 
+    | fields src_ip index _time ] 
+    [ search index="wineventlog" src_ip=* sourcetype="WinEventLog" 
+    | fields src_ip _time index ] 
+    [ search index="index4" LocalAddressIP4=* sourcetype="somesourcetype" 
+    | fields LocalAddressIP4 _time index ] 
+```Use multisearch for a streaming search across multiple indexers to run these search jobs``` 
+| rename    ip_address AS src_ip,
+            LocalAddressIP4 AS src_ip
+| rex field=src_ip "(?<subnet>^(?:(?:1?\d?\d|2[0-4]\d|25[0-5])(?:\.)){3})" 
+```Use rex to find the first 3 octets of the ip addresses and place them into a subnets field..``` 
+| search NOT 
+    [| inputlookup known_subnets.csv ] 
+```We will reference this file as a lookup for subnets to not report on, which is populated by subnets previously found in the last run of this job.``` 
+| stats min(_time) as earliest, max(_time) as latest by subnet index
+```The stats command generates a count, remove it with the fields command.``` 
+| where earliest >= (relative_time(now(),"-30d")) 
+```Look for anything where the earliest field is within the last 30 days``` 
+| stats min(earliest) as earliest, 
+        max(latest) as latest 
+        BY subnet index 
+| convert timeformat="%m/%d/%Y" ctime(earliest) ctime(latest) 
+| mvcombine index 
+```Combine the indexes into a single field if they are represented by multiple entries with the same ip and dates``` 
+| outputlookup known_subnets.csv append=t
+```Output to the same lookup table.````
