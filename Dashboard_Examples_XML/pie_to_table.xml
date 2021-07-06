@@ -1,0 +1,70 @@
+<form theme="dark">
+  <!-- Base search -->
+  <!-- Just mocking up some random data here -->
+  <search id="mybasesearch">
+    <query><![CDATA[
+| makeresults count=5000
+| eval keyA=random()%3
+| eval keyA=case(
+  keyA==0,"low",
+  keyA==1,"medium",
+  keyA==2,"high"
+)
+| eval keyB=random()%30
+| eval tdelta=random()%(86400*30)
+| eval _time=_time-tdelta
+| fields - tdelta
+| sort - _time]]></query>
+    <earliest>-1d</earliest>
+    <latest>now</latest>
+  </search>
+  <row>
+    <!-- This panel is the table view, using a rejects, it makes it the
+         default view.  Note, all drilldowns here are forced to just
+         flipping the view, but a button could easily serve the same
+         role.  -->
+    <panel rejects="$showpie$">
+      <title>Table view</title>
+      <table>
+        <search base="mybasesearch">
+          <query><![CDATA[
+| stats count by keyA
+| eventstats sum(count) AS total
+| eval Pct=round(count/total,2)*100
+| eval Pct=Pct + "%"
+| fields - total
+]]></query>
+        </search>
+        <drilldown>
+          <set token="showpie">1</set>
+        </drilldown>
+      </table>
+    </panel>
+    <!-- Now we have a seemingly identical panel, using the same search,
+         but as a pie chart instead of a table.  We don't even bother cleaning
+         up the post-process search.  Placement matters, it needs to be right
+         next to the table it replaces.  Using the depends causes it to appear
+         when the table is clicked on (or potentially button) -->
+    <panel depends="$showpie$">
+      <title>Pie view</title>
+      <chart>
+        <search base="mybasesearch">
+          <query><![CDATA[
+``` same query here ```
+| stats count by keyA
+| eventstats sum(count) AS total
+| eval Pct=round(count/total,2)*100
+| eval Pct=Pct + "%"
+| fields - total
+]]></query>
+        </search>
+        <!-- The drilldown causes the user to flip back to the table view -->
+        <drilldown>
+          <unset token="showpie" />
+        </drilldown>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+      </chart>
+    </panel>
+  </row>
+</form>
