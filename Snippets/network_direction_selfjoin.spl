@@ -1,0 +1,9 @@
+```Use selfjoin and eval to determine the direction of traffic```
+
+index=someindex sourcetype=somesourcetype dest_port IN ("53", "22", "80")
+| selfjoin session_id 
+| eval dest = if(direction="inbound",src_ip,dest_ip) 
+| eval src = if(direction="inbound",dest_ip,src_ip) 
+| fillnull user_first user_last direction dest_port 
+| eval Name = user_first." ".user_last
+| stats count by _time, host, src_ip, dest_ip, dest, bytes, direction, Name, dest_port
