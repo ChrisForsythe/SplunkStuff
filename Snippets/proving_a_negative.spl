@@ -12,7 +12,7 @@
 
 
 
-```Generate 0 data after a stats with this method for the number of days you need 0 results``` 
+```This is another way to prove a negative, however this time it does so over a 14 day window of time with gentimes.``` 
 | append 
     [| gentimes start=-14 end=0 increment=1d 
     | eval
