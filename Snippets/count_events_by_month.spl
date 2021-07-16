@@ -1,0 +1,25 @@
+| tstats count WHERE index=* AND NOT index IN ("cim_modactions", "*_summary", "main", "summary", "threat_activity", "_*", "risk", "notable") earliest=-5mon@mon latest=@mon by date_month _time 
+| eval month_year=lower(strftime(now(),"%B")) 
+| where date_month != month_year 
+| eval date_month = upper(substr(date_month,1,1)).substr(date_month,2) 
+| streamstats current=f window=1 last(count) as last_sum 
+| eval month_num=strftime(_time,"%m")
+| stats sum(count) AS count sum(last_sum) AS last_sum values(month_num) AS month_num BY date_month 
+| sort month_num
+| eval difference = count - last_sum 
+| eval percentage = round(((count-last_sum)/last_sum)*100,2)."%" 
+| fields date_month count difference percentage 
+| eval "Difference - Percentage of Change" = difference." - ".percentage 
+| fields - percentage difference 
+| rename date_month AS Month, count AS "Event Count"
+
+
+```This search assumes your summary indexes are named in this format:
+
+someindex_summary
+
+If they are prefixed with summary_someindex it would be more efficient.
+
+This is a WIP and can likely be improved.
+
+This would be better with an include listing indexes rather than the NOT to exclude```
