@@ -1,16 +1,16 @@
 # Setting up a HF
 
-## When to use a HF?
+# When to use a HF?
 There are a few use cases where a HF makes sense.  Many of the common cases
 seen where HFs are used actually do not call for a HF.  In some cases, it is
 an unnecessary point of failure, in other cases, it actively hurts performance,
 availability data integrity (therefore security is reduced, not increased).
 
-### Modular inputs
+## Modular inputs
 Modular inputs require a full Splunk Enterprise environment, and thus cannot
 run from a universal forwarder.  For example, the dbconnect app.
 
-### Fractured Network
+## Fractured Network
 If your network is broken^Bsegmented to the point where you cannot route from
 your universal forwarders to your indexer tier, then a heavy forwarder can
 act as a proxy.  In this case, always have at least as many heavy forwarders
@@ -23,7 +23,7 @@ Splunk cloud.  You don't want the Splunk managed resources (such as the IDF)
 to have access to your internal network, so you should setup a HF on the
 inside which then forwards the data.
 
-### Mobile DCs
+## Mobile DCs
 This use case is a new one that is not well understood.  In some circumstances,
 a mobile collection of computers may go offline for a period of time before
 coming back online in a different location with a different network connection.
@@ -31,7 +31,7 @@ In this scenario, a small data center's worth of computer systems collects
 and processes the logs, caching them for some time in a centralized point
 with plenty of disk, before forwarding on to the main indexing tier later.
 
-## Operating System
+# Operating System
 
 The most important question is are you doing something that only supports one
 operating system?  For example, are you trying to run an input that requires
@@ -44,14 +44,14 @@ Linux?  If there is no one who knows Linux at all, then Windows is appropriate.
 If you have a mix of operating systems, or sufficient background, pick Linux.
 It is by far the best supported operating system. 
 
-### Don't forget DNS
+## Don't forget DNS
 
 Always set an application CNAME up for your forwarder.  Use that heavily so
 if you need to replace your heavy forwarder, you just swing the CNAME
 around, but with a unique A record, you don't get your heavy forwarders
 confused.
 
-### Capacity
+## Capacity
 
 The most common capacity issue seen on heavy forwarders is dozens of python
 scripts all launching the exact same time.  For example, if you have 54
@@ -65,7 +65,7 @@ ability to swing inputs over a variable period of time (sway time, splay
 time, etc.)  Therefore, avoiding this kind of imbalance must be done
 manually.
 
-## Use an app
+# Use custom apps for configuration
 Don't do anything by the GUI
 
 First, remember the rule of configuration, don't touch 
@@ -92,7 +92,7 @@ It also means that when you build a new forwarder, you just deploy all the
 apps associated with your heavy forwarder role, set a few passwords and you
 are done.
 
-### To Deployment Server or not
+## To Deployment Server or not
 If you have a deployment server, use it for your HF.  Just make sure any
 "All clients" apps really are appropriate for your heavy forwarder.  If you
 use other methods to manage your UFs, you can also use them on your HF.
@@ -125,7 +125,7 @@ the app's **default** directory.
 The first layer expected to override the **z** app might start with a **y**
 to show clear priority.
 
-### Automating authentication system changes
+## Automating authentication system changes
 You don't want to restart the forwarder every time you make a change to the
 authentication system by configuration file, and you shouldn't do it by GUI
 because then you aren't saving it elsewhere to rapidly rebuild your
@@ -141,7 +141,7 @@ Create an alias that uses that token to run the reload authentication command
 
 (Insert the actual token in place of the *ABCD...*)
 
-### Automating local account setup
+## Automating local account setup
 
 If you use local authentication, you have the added complexity of creating
 users.  If using git, consider a template file triggered by a local git
@@ -160,12 +160,12 @@ briefly to process table information, so it may not be the best option...
 occurs, so special characters means surround the password in single quotes,
 or otherwise protect it.
 
-### Final words on local authentication automation
+## Final words on local authentication automation
 
 Find a SAML provider.  It really makes things easier.  Set it up for your
 heavy forwarders even if you only expect two people to ever login.
 
-## Monitoring
+# Monitoring
 
 Right now, there is no role in the monitoring console for a heavy forwarder.
 But the thing you are most interested in, the queue fill ratios, is 
