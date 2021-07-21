@@ -1,0 +1,107 @@
+| makeresults 
+| eval d="TEST NET 1", net="192.0.2.0/24" 
+| append 
+    [| makeresults 
+    | eval d="27 net", net="192.0.2.64/27"
+        ] 
+| append 
+    [| makeresults 
+    | eval d="dc1", net="192.0.2.0/25"
+        ] 
+| append 
+    [| makeresults 
+    | eval d="Windows DCs", net="192.168.22.96/28"
+        ] 
+| rename d AS Name
+    ``` End data mockup ``` 
+| rex field=net "(?<IP>[\d.]+)\/(?<netsize>\d+)" 
+| eval netexpanded=case(
+    netsize="1", "128.0.0.0",
+    netsize="2", "192.0.0.0",
+    netsize="3", "224.0.0.0",
+    netsize="4", "240.0.0.0",
+    netsize="5", "248.0.0.0",
+    netsize="6", "252.0.0.0",
+    netsize="7", "254.0.0.0",
+    netsize="8", "255.0.0.0",
+    netsize="9", "255.128.0.0",
+    netsize="10", "255.192.0.0",
+    netsize="11", "255.224.0.0",
+    netsize="12", "255.240.0.0",
+    netsize="13", "255.248.0.0",
+    netsize="14", "255.252.0.0",
+    netsize="15", "255.254.0.0",
+    netsize="16", "255.255.0.0",
+    netsize="17", "255.255.128.0", 
+    netsize="18", "255.255.192.0", 
+    netsize="19", "255.255.224.0", 
+    netsize="20", "255.255.240.0", 
+    netsize="21", "255.255.248.0", 
+    netsize="22", "255.255.252.0", 
+    netsize="23", "255.255.254.0", 
+    netsize="24", "255.255.255.0", 
+    netsize="25", "255.255.255.128",
+    netsize="26", "255.255.255.192",
+    netsize="27", "255.255.255.224",
+    netsize="28", "255.255.255.240",
+    netsize="29", "255.255.255.248",
+    netsize="30", "255.255.255.252",
+    netsize="31", "255.255.255.254",
+    netsize="32", "255.255.255.255") 
+| eval netbinary = case(
+    netsize="1", "1000 0000 0000 0000 0000 0000 0000 0000",
+    netsize="2", "1100 0000 0000 0000 0000 0000 0000 0000",
+    netsize="3", "1110 0000 0000 0000 0000 0000 0000 0000",
+    netsize="4", "1111 0000 0000 0000 0000 0000 0000 0000",
+    netsize="5", "1111 1000 0000 0000 0000 0000 0000 0000",
+    netsize="6", "1111 1100 0000 0000 0000 0000 0000 0000",
+    netsize="7", "1111 1110 0000 0000 0000 0000 0000 0000",
+    netsize="8", "1111 1111 0000 0000 0000 0000 0000 0000",
+    netsize="9", "1111 1111 1000 0000 0000 0000 0000 0000",
+    netsize="10", "1111 1111 1100 0000 0000 0000 0000 0000",
+    netsize="11", "1111 1111 1110 0000 0000 0000 0000 0000",
+    netsize="12", "1111 1111 1111 0000 0000 0000 0000 0000",
+    netsize="13", "1111 1111 1111 1000 0000 0000 0000 0000",
+    netsize="14", "1111 1111 1111 1100 0000 0000 0000 0000",
+    netsize="15", "1111 1111 1111 1110 0000 0000 0000 0000",
+    netsize="16", "1111 1111 1111 1111 0000 0000 0000 0000",
+    netsize="17", "1111 1111 1111 1111 1000 0000 0000 0000",
+    netsize="18", "1111 1111 1111 1111 1100 0000 0000 0000",
+    netsize="19", "1111 1111 1111 1111 1110 0000 0000 0000",
+    netsize="20", "1111 1111 1111 1111 1111 0000 0000 0000",
+    netsize="21", "1111 1111 1111 1111 1111 1000 0000 0000",
+    netsize="22", "1111 1111 1111 1111 1111 1100 0000 0000",
+    netsize="23", "1111 1111 1111 1111 1111 1110 0000 0000",
+    netsize="24", "1111 1111 1111 1111 1111 1111 0000 0000",
+    netsize="25", "1111 1111 1111 1111 1111 1111 1000 0000",
+    netsize="26", "1111 1111 1111 1111 1111 1111 1100 0000",
+    netsize="27", "1111 1111 1111 1111 1111 1111 1110 0000",
+    netsize="28", "1111 1111 1111 1111 1111 1111 1111 0000",
+    netsize="29", "1111 1111 1111 1111 1111 1111 1111 1000",
+    netsize="30", "1111 1111 1111 1111 1111 1111 1111 1100",
+    netsize="31", "1111 1111 1111 1111 1111 1111 1111 1110",
+    netsize="32", "1111 1111 1111 1111 1111 1111 1111 1111") 
+| rex mode=sed field=netbinary "s/ //g" 
+| convert auto(netbinary) 
+| eval octet = split(IP, ".") 
+| eval rank = split("1,2,3,4", ",") 
+| eval octet_rank = mvzip(rank, octet) 
+| fields - octet, rank 
+| mvexpand octet_rank 
+| eval octet_rank_split = split(octet_rank, ",") 
+| eval rank = mvindex(octet_rank_split, 0) 
+| eval octet = mvindex(octet_rank_split, 1) 
+| fields - octet_rank, octet_rank_split 
+| eval power = mvrange(0,8) 
+| mvexpand power 
+| eval base2 = pow(2, power) 
+| eval mydiv = floor(octet / base2) 
+| eval octet_bin = mydiv % 2 
+| fields - mydiv, base2 
+| sort limit=0 IP, rank, octet, - power 
+| stats list(octet_bin) as octet_bin by IP, rank, octet netbinary netexpanded netsize, Name
+| eval octet_bin = mvjoin(octet_bin, "") 
+| sort limit=0 IP, rank 
+| stats list(octet_bin) as octet_bin by IP netbinary netexpanded netsize Name
+| eval octet_bin = mvjoin(octet_bin, ".")
+| fields Name IP *
