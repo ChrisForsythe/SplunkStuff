@@ -1,0 +1,14 @@
+| tstats values(date_month) AS date_month min(_time) as earliest_time max(_time) AS latest_time WHERE index=* earliest=-2mon latest=-1mon+1d BY host _time span=1mon 
+| stats 
+    values(date_month) AS date_month,
+    values(earliest_time) AS earliest_time,
+    values(latest_time) AS latest_time
+    BY host 
+| eval months_exist=mvcount(date_month),
+    lastmonth=lower(strftime(relative_time(now(),"-1mon"),"%B")) 
+| where months_exist=1 AND date_month=lastmonth 
+| foreach *_time 
+    [| convert ctime(<<FIELD>>) timeformat="%m/%d/%Y"] 
+| fields - lastmonth months_exist latest_time date_month 
+| rename earliest_time AS "First Seen" 
+| sort 0 - "First Seen"
