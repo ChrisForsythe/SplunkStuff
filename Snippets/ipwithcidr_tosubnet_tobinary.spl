@@ -84,8 +84,11 @@
     netsize="30", "1111 1111 1111 1111 1111 1111 1111 1100",
     netsize="31", "1111 1111 1111 1111 1111 1111 1111 1110",
     netsize="32", "1111 1111 1111 1111 1111 1111 1111 1111") 
-| rex mode=sed field=netbinary "s/ //g" 
+```Remove the spaces from netbinary```
+| rex mode=sed field=netbinary "s/ //g"
+```Convert netbinary``` 
 | convert auto(netbinary) 
+```Refer to https://community.splunk.com/t5/Getting-Data-In/Providing-IPAddress-and-Subnet-Mask-and-getting-corresponding/m-p/250966 for more on the following. ```
 | eval octet = split(IP, ".") 
 | eval rank = split("1,2,3,4", ",") 
 | eval octet_rank = mvzip(rank, octet) 
