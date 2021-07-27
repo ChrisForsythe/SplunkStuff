@@ -1,0 +1,8 @@
+```Break each part of a domain up in order to search each word```
+
+| makeresults 
+| eval domain="whatever.domain.com"
+| append 
+    [| makeresults 
+    | eval domain="foo.bar.baz.whatever.domain.com"]
+| rex field=domain max_match=0 "\b(?<words>\w+)+\b"
