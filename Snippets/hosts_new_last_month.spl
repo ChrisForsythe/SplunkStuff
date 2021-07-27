@@ -1,3 +1,5 @@
+```Use the following search to find hosts which did not report in 2 months ago but reported in last month.```
+
 | tstats values(date_month) AS date_month min(_time) as earliest_time max(_time) AS latest_time WHERE index=* earliest=-2mon latest=-1mon+1d BY host _time span=1mon 
 | stats 
     values(date_month) AS date_month,

@@ -1,3 +1,6 @@
+```Use this search to convert cidr mask to subnet mask, to binary for the subnet. This is an example of what you can do with spl and not so much something which would be usable as-is```
+
+
 | makeresults 
 | eval d="TEST NET 1", net="192.0.2.0/24" 
 | append 
