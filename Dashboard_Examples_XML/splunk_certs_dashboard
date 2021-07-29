@@ -1,0 +1,118 @@
+<form>
+  <label>Splunk Education</label>
+  <description>This dashboard allows the user to determine the certifications they are eligible to take.</description>
+  <fieldset submitButton="false" autoRun="false">
+    <input type="multiselect" token="coursestoken">
+      <label>Courses</label>
+      <fieldForLabel>CoursesTaken</fieldForLabel>
+      <fieldForValue>Courses</fieldForValue>
+      <search>
+        <query>| makeresults 
+| eval Courses="Splunk Fundamentals 1;
+Splunk Fundamentals 2;
+Splunk Fundamentals 3;
+Creating Dashboards with Splunk;
+Advanced Searching and Reporting;
+Splunk Cloud Administration;
+Transitioning to Splunk Cloud;
+Splunk Enterprise System Administration;
+Splunk Enterprise Data Administration;
+Troubleshooting Splunk Enterprise;
+Splunk Enterprise Cluster Administration;
+Architecting Splunk Enterprise Deployments;
+Splunk Enterprise Practical Lab;
+Advanced Dashboards and Visualizations;
+Building Splunk Apps;
+Developing with Splunk's REST API;
+Administering Splunk Enterprise Security;
+Implementing Splunk IT Service Intelligence;
+Splunk Deployment Practical Lab;
+Core Consultant Labs;
+Services Core Implementation;
+Administering Phantom;
+Developing Phantom Playbooks;
+Advanced Phantom Implementation;
+"  
+| makemv delim=";" Courses 
+| mvexpand Courses 
+| table Courses</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <prefix>"</prefix>
+      <suffix>"</suffix>
+    </input>
+    <input type="multiselect" token="certstoken">
+      <label>Certs</label>
+      <fieldForLabel>Certifications</fieldForLabel>
+      <fieldForValue>Certs</fieldForValue>
+      <search>
+        <query>| makeresults 
+| eval Certs="Splunk Core Certified User;
+Splunk Core Certified Power User;
+Splunk Core Certified Advanced Power User;
+Splunk Cloud Certified Admin;
+Splunk Enterprise Certified Admin;
+Splunk Enterprise Certified Architect;
+Splunk Certified Developer;
+Splunk Enterprise Security Certified Admin;
+Splunk IT Service Intelligence Certified Admin;
+Splunk Core Certified Consultant;
+Splunk Phantom Certified Admin;
+" 
+| makemv delim=";" Certs
+| mvexpand Certs
+| table Certs</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <prefix>"</prefix>
+      <suffix>"</suffix>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>| inputlookup certs_lookup.csv
+| search Pre-Req=$coursestoken$
+| table *</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>| makeresults count 10 | eval SplunkCoreCertifiedUser = case(
+    $coursestoken$, "Yes",
+    true(), "No")</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>| inputlookup certs_lookup.csv 
+| search Certification=$certstoken$
+| table Pre-Req</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</form>
