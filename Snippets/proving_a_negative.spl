@@ -11,6 +11,19 @@
     | fields - count]
 
 
+```An alternative method for proving a negative is to populate data with append and makeresults, then using stats to sum everything```
+
+| stats count by field1, field2
+```You need to know every possible value for field1 and field2``` 
+| append 
+    [| makeresults 
+    | eval field1="Something", field2="Something", count=0] 
+| append 
+    [| makeresults 
+    | eval field1="Something2", field2="Something2", count=0] 
+| stats sum(count) BY field1, field2
+
+
 
 ```This is another way to prove a negative, however this time it does so over a 14 day window of time with gentimes.``` 
 | append 
