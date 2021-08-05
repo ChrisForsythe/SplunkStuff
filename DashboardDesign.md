@@ -143,7 +143,9 @@ the time you click on the drilldown to bring them up.
 A simple trick to accelerate pop-up panels is to use a base search that creates
 the base results and the token that brings up the pop-up panel just filters
 the results based on the token.  But if that isn't enough, then maybe you
-should be rethinking your query design, or thinking about summary data. 
+should be rethinking your query design, or thinking about summary data.
+
+Another way to improve performance is to run your query as a saved search, accelerated, and then use `| loadjob` to load the results of that saved search.  Like summary index searches, this method can dramatically accelerate your panels.
 
 ### Concurrent search limits
 
