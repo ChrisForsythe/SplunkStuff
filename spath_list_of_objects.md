@@ -19,7 +19,7 @@ You have a JSON object that might look something like
             "destination": "splunk-indexers.example.com"
         },
         {
-            "name": "permit syslHECog",
+            "name": "permit HEC",
             "protocol": "tcp",
             "port": "8088",
             "action": "allow",
