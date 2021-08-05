@@ -1,5 +1,7 @@
 This repository is meant to host general purpose examples of how to perform tasks within Splunk. Dashboards in simplexml and the new json format. Some standards in coding should be attempted to be adhered to in order to make things easier.
 
+We generally work in branches and submit pull requests when the branch is ready. The change can be big or small, but you are not required to make a branch for things like modifying comments or formatting or anything of this nature.
+
 The intention of this small list style suggestions is to make it easier to understand what is happening where possible. Your commit/push privs will not be revoked due to lack of adherence by any means.
 
 If you have suggestions for improvements to the guide you can either find me or write up an issue on github.
