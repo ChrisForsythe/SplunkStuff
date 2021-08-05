@@ -111,7 +111,7 @@ documentation for developers.
 
 Not every visualization is well suited to every data type.
 
-### pie charts
+### Pie Charts
 
 Pie charts should be used when measuring percentages of a whole, such that
 all the slices are expected to be an actual percentage.  They are good at
