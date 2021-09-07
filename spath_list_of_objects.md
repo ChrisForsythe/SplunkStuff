@@ -1,7 +1,8 @@
 # JSON lists
 You have a JSON object that might look something like
-{
-    "accessRules": [
+
+    {
+      "accessRules": [
         {
             "name": "permit syslog",
             "protocol": "udp",
@@ -26,8 +27,8 @@ You have a JSON object that might look something like
             "source": "0.0.0.0/0",
             "destination": "splunk-indexers.example.com"
         }
-    ]
-}
+      ]
+    }
 
 What's important here is that there is an object that forms one event, and that object has a list of objects inside it.  Don't overthink this.
 
