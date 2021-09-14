@@ -12,6 +12,7 @@ As we find useful links for Splunk topics, we will add them to this page.
 ###### Understanding Splunk
 
 [Splunk is not a database, an explanation of how Splunk works compared to databases](https://community.splunk.com/t5/Splunk-Search/How-to-join-two-tables-where-the-key-is-named-differently-and/td-p/355924?sort=newest)
+[Splunk Extended Search Dashboard and other resources](https://github.com/dpaper-splunk/public)
 
 ###### Enterprise Security
 
