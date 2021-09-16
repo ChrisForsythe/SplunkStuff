@@ -16,7 +16,7 @@ The key value of indexed fields is metadata.  Fields can be added to the data th
 
 All of these presume the best case scenario, that the search is done prior to the first pipe.
 
-* If you are searching for a bare string, there is no benefit to indexed fields
+* If you are searching for a bare string, (`"mystringhere"`) there is no benefit to indexed fields
 * If you are searching for a key value pair (`key=value`) and the value is not commonly found except in that key, there is no benefit to indexed fields
 * If you are searching for a key value pair that is not present in the raw data, indexed fields are the only way to do that
 * If you are searching for a key value pair that the value is very common outside that key (e.g. `mykey=2`), then indexed fields are beneficial.
