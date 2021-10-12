@@ -15,6 +15,10 @@ As we find useful links for Splunk topics, we will add them to this page.
 
 [Splunk Extended Search Dashboard and other resources](https://github.com/dpaper-splunk/public)
 
+###### Command Examples
+
+[Streamstats to count by a field](https://github.com/ChrisForsythe/SplunkStuff/blob/b8ead17caadf356d16c231c0d9a671eaf6b72fc1/Snippets/gethosts.spl#L7)
+
 ###### Enterprise Security
 
 [TA to edit notables in ES](https://github.com/dglauche/TA-notableeditor)
