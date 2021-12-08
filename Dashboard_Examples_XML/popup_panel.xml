@@ -15,10 +15,12 @@ result=="2","high")
   </search>
   <search id="basepanel">
           <query><![CDATA[
+| makeresults count=200
+
 ```
 Fake up two simple fields.  Note, this is done in a base search
 ```
-| makeresults count=200
+
 | eval result=random()%3
 | eval area=random()%5
 | eval result=case(
