@@ -24,3 +24,7 @@ As we find useful links for Splunk topics, we will add them to this page.
 ###### Enterprise Security
 
 [TA to edit notables in ES](https://github.com/dglauche/TA-notableeditor)
+
+###### Splunk upgrade
+
+[Check app compatibility against a splunk version you would like to upgrade to](https://splunkbase.splunk.com/app/5698/)
