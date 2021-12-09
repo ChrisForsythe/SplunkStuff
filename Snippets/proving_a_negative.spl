@@ -1,3 +1,16 @@
+```This is a run anywhere example. After this search is an example which has more comments explaining how it works.````
+
+| makeresults 
+| eval foo=split("test,test2", ","), bar=split("27,33", ",") 
+| mvexpand foo 
+| mvexpand bar 
+| stats sum(bar) AS count BY foo 
+| append 
+    [| makeresults 
+    | eval foo="test4", count=0 ] 
+| stats sum(count) AS amount BY foo
+
+
 ```This is a typical way to prove a negative. Splunk does not know about things which do not exist, so if you need to show a value for items which are going to return nothing you have to account for it by proving a negative.```
 
 | stats count by somefield Time 
