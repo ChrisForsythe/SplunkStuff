@@ -1,0 +1,72 @@
+<dashboard>
+  <label>base search with export</label>
+  <search id="basesearch">
+    <!--Create your base search or searches as you normally do here.-->
+    <query>index=_internal sourcetype=splunkd
+| bin _time
+| stats count by _time component
+| append 
+    [| gentimes start=-1 end=0 increment=1d 
+    | eval
+        _time=starttime, 
+        component="Proving a Negative",
+        count=0
+    | fields _time, component]
+| eventstats dc(component) as components
+| search components>1 OR component="Proving a Negative"</query>
+    <!--The gentimes is used in case your environment has no internal logs over the past 24 hours. For more examples on proving a negative check out https://github.com/ChrisForsythe/SplunkStuff/blob/master/Snippets/proving_a_negative.spl-->
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
+    <progress>
+      <set token="running">*</set>
+      <unset token="done"></unset>
+    </progress>
+    <done>
+      <set token="done">$job.sid$</set>
+      <unset token="running"></unset>
+    </done>
+  </search>
+  <row>
+    <panel>
+      <!--HTML panel used to display the hidden tokens that derive from the base search-->
+      <html>
+      <p>While base search running this token is set and should be unset when the base search completes: $running$</p>
+      <p>When the base search finishes this token should contain the search id of the base search: $done$</p>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart depends="$running$">
+        <!--This chart entry is so the end user sees the search running and can watch the results stream in as is typical.-->
+        <search base="basesearch">
+          <query>| search $basesearch$ | timechart sum(count) as count by component</query>
+        </search>
+        <option name="charting.chart">line</option>
+      </chart>
+      <chart depends="$done$">
+        <!--This chart entry is used to display the final results and because loadjob spawns a new search process you can export the data.-->
+        <search>
+          <query>| loadjob $done$ 
+| timechart sum(count) as count by component</query>
+        </search>
+        <option name="charting.chart">line</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <table depends="$running$">
+      <!--This table entry is so the end user sees the search running and can watch the results stream in as is typical.-->
+      <search base="basesearch">
+        <query>| stats sum(count) as count by component | sort 0 - count</query>
+      </search>
+    </table>
+    <table depends="$done$">
+      <!--This table entry is used to display the final results and because loadjob spawns a new search process you can export the data.-->
+      <search>
+        <query>| loadjob $done$ 
+| stats sum(count) as count by component | sort 0 - count</query>
+      </search>
+    </table>
+  </row>
+</dashboard>
