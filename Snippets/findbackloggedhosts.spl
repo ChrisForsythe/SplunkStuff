@@ -1,0 +1,38 @@
+index=* host=* 
+| fields _time index host _indextime 
+| stats max(_time) AS max_time,
+    max(_indextime) AS max_index_time
+    BY
+    index,
+    host
+    ```Example of how to add known hosts 
+| append 
+    [| gentimes start=-14 end=0 increment=5m 
+    | eval
+        max_time=starttime, 
+        count=0, 
+        host="10.10.10.10" ,
+        index="indexname" 
+    | fields max_time, count, host, index] 
+| stats max(max_time) AS max_time,
+    max(max_index_time) AS max_index_time
+    sum(count) AS count 
+    BY 
+    index,
+    host 
+    ``` 
+    ```Set your acceptable time difference here:``` 
+| eval acceptable_time = relative_time(now(),"-45m" ) 
+| foreach *_time 
+    [ convert ctime(<<FIELD>>)] 
+| where acceptable_time > max_index_time OR acceptable_time > max_time OR count=0 
+| eval IndexManualTime=strptime(max_index_time,"%m/%d/%Y %H:%M:%S.%6Q"),
+    ManualTime=strptime(max_time,"%m/%d/%Y %H:%M:%S.%6Q") ,
+    BackLoggedPeriodIndexing=round((now()-IndexManualTime)/60,0),
+    BackLoggedEventsTime=round((now()-ManualTime)/60,0) 
+| fillnull max_index_time BackLoggedPeriodIndexing value="No Logs in time period" 
+| eval "Index and Host Search" = "Search for the following: index=".index." host=".host, 
+    BackLoggedPeriodIndexing=BackLoggedPeriodIndexing." Minutes Ago", 
+    BackLoggedEventsTime=BackLoggedEventsTime." Minutes Ago" 
+| fields "Index and Host Search", max_index_time, max_time, BackLoggedPeriodIndexing, BackLoggedEventsTime 
+| rename max_index_time AS "Latest Timestamp for Indexing this Host", max_time AS "Latest Event for Host", BackLoggedPeriodIndexing AS "Last Time Indexed Backlog", BackLoggedEventsTime AS "Time Since Latest Event"
