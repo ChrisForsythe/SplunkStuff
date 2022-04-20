@@ -1,0 +1,25 @@
+| multisearch 
+    [| search index=index1 IP=* earliest=-7d@d latest=now 
+    | fields IP index 
+    | rename IP AS ip] 
+    [| search index=index2 earliest=-7d@d latest=now src_ip=* 
+    | fields src_ip dest_ip index 
+    | eval ip=mvappend(src_ip,dest_ip,IP) 
+    | mvexpand ip] 
+    [| search FIELD=* index=index3 IP=* earliest=-7d@d latest=now 
+    | fields IP index 
+    | rename IP AS ip] 
+| stats values(index) AS index BY ip 
+| rex field=index "(?<index1counter>index1)" 
+| rex field=index "(?<index2counter>index2)" 
+| rex field=index "(?<index3counter>index3)" 
+| stats count(index1counter) AS index1count,
+        count(index2counter) AS index2count,
+        count(index3counter) AS index3count
+        BY ip 
+| search index1count=1 OR index2count=1
+| stats sum(index1count) AS index1count,
+        sum(index2count) AS index2count,
+        sum(index3count) AS index3count,
+        count(ip) AS ipcount
+| eval percentage=round(((index3count/ipcount)*100),2)
