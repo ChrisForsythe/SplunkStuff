@@ -1,0 +1,11 @@
+| makeresults
+``` creating sample data ```
+| eval tester="({\"state\"=>\"STOPPED\"}), ({\"name\"=>\"APP1\"}), ({\"instances\"=>2})"
+| makemv delim=", " tester
+| mvexpand tester
+``` extracting field_name and a field_value from each event ```
+| rex field=tester "\(\{\"(?<field_name>[^\"]*)\"=>\"?(?<field_value>[^\"]*)\"?\}\)"
+``` create a new field with name field_name and value field_value ```
+``` e.g. 3 new fields created from the above tester data ```
+``` state=STOPPED; name=APP1; instance=2 ```
+| eval {field_name} = field_value
