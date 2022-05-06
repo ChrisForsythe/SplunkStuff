@@ -1,0 +1,10 @@
+| makeresults 
+| eval passedResources=split("237,2,5,3,2,5,282387",",") 
+| mvexpand passedResources 
+| eval failedResources=split("2,5,27,16",",") 
+| mvexpand failedResources 
+| stats sum(passedResources) AS passedResources,
+    sum(failedResources) AS failedResources
+| eval total=failedResources+passedResources
+| eval percentageFailed=round(((failedResources/total)*100),2)
+| eval percentagePassed=round(((passedResources/total)*100),2)
