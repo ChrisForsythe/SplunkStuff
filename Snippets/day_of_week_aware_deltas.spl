@@ -36,5 +36,5 @@ with increments of ten minutes.
 | eval average=round(average,2) 
 | eval 
     lowbound=average-(2*standev),
-    hibound=average+(2*standev)  ```
-| where count > hibound OR count < lowbound ```
+    hibound=average+(2*standev)  
+| where count > hibound OR count < lowbound 
