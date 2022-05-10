@@ -1,0 +1,56 @@
+```
+Problem to be solved:  We wish to identify time windows that have extremely high or 
+low numbers of events from a very high volume index (e.g. firewall), in a manner
+that is aware of day of week and time of day, because your firewall volume has normal 
+swings depending on the time and day of week.
+
+This search looks over the past eight weeks at a fairly narrow time window, two hours
+at a time, to see how much traffic your firewall is getting.  Because it uses
+tstats and only searches the exact time windows, it is not horribly inefficient,
+unlike searches that search everything and only return the events you care about.
+
+The multisearch command cannot be used because tstats is not multisearch compatible.
+The problem is the volume of your index is too high to not use tstats.
+
+Lookup tables of saved data are not friendly to using this search in an evironment 
+with multiple disparate search heads, such as enterprise Splunk and enterprise security.
+
+There is a factor of two standard deviations above and below the arithmetic mean in
+this query to calculate the high and low bounds.  Simply adjust that multiplier for your
+use case.
+
+The time specification is semi-clever here, but really, it does do two hour windows,
+with increments of ten minutes.
+```
+
+| tstats count where index=firewall earliest=-8w@h-1h latest=-8w@h+1h BY _time span=10m 
+| append 
+    [| tstats count where index=firewall earliest=-7w@h-1h latest=-7w@h+1h BY _time span=10m 
+        ] 
+| append 
+    [| tstats count where index=firewall earliest=-6w@h-1h latest=-6w@h+1h BY _time span=10m 
+        ] 
+| append 
+    [| tstats count where index=firewall earliest=-5w@h-1h latest=-5w@h+1h BY _time span=10m 
+        ] 
+| append 
+    [| tstats count where index=firewall earliest=-4w@h-1h latest=-4w@h+1h BY _time span=10m 
+        ] 
+| append 
+    [| tstats count where index=firewall earliest=-3w@h-1h latest=-3w@h+1h BY _time span=10m
+        ] 
+| append 
+    [| tstats count where index=firewall earliest=-2w@h-1h latest=-2w@h+1h BY _time span=10m
+        ] 
+| append 
+    [| tstats count where index=firewall earliest=-1w@h-1h latest=-1w@h+1h BY _time span=10m
+        ] 
+| append 
+    [| tstats count where index=firewall earliest=@h-1h latest=@h+1h BY _time span=10m
+        ] 
+| eventstats avg(count) AS average, stdev(count) AS standev 
+| eval average=round(average,2) 
+| eval 
+    lowbound=average-(2.5*standev),
+    hibound=average+(2.5*standev) 
+| where count > hibound OR count < lowbound
