@@ -24,33 +24,17 @@ with increments of ten minutes.
 ```
 
 | tstats count where index=firewall earliest=-8w@h-1h latest=-8w@h+1h BY _time span=10m 
-| append 
-    [| tstats count where index=firewall earliest=-7w@h-1h latest=-7w@h+1h BY _time span=10m 
-        ] 
-| append 
-    [| tstats count where index=firewall earliest=-6w@h-1h latest=-6w@h+1h BY _time span=10m 
-        ] 
-| append 
-    [| tstats count where index=firewall earliest=-5w@h-1h latest=-5w@h+1h BY _time span=10m 
-        ] 
-| append 
-    [| tstats count where index=firewall earliest=-4w@h-1h latest=-4w@h+1h BY _time span=10m 
-        ] 
-| append 
-    [| tstats count where index=firewall earliest=-3w@h-1h latest=-3w@h+1h BY _time span=10m
-        ] 
-| append 
-    [| tstats count where index=firewall earliest=-2w@h-1h latest=-2w@h+1h BY _time span=10m
-        ] 
-| append 
-    [| tstats count where index=firewall earliest=-1w@h-1h latest=-1w@h+1h BY _time span=10m
-        ] 
-| append 
-    [| tstats count where index=firewall earliest=@h-1h latest=@h+1h BY _time span=10m
-        ] 
+| tstats append=true prestats=true count where index=firewall earliest=-7w@h-1h latest=-7w@h+1h BY _time span=10m 
+| tstats append=true prestats=true count where index=firewall earliest=-6w@h-1h latest=-6w@h+1h BY _time span=10m 
+| tstats append=true prestats=true count where index=firewall earliest=-5w@h-1h latest=-5w@h+1h BY _time span=10m 
+| tstats append=true prestats=true count where index=firewall earliest=-4w@h-1h latest=-4w@h+1h BY _time span=10m 
+| tstats append=true prestats=true count where index=firewall earliest=-3w@h-1h latest=-3w@h+1h BY _time span=10m
+| tstats append=true prestats=true count where index=firewall earliest=-2w@h-1h latest=-2w@h+1h BY _time span=10m
+| tstats append=true prestats=true count where index=firewall earliest=-1w@h-1h latest=-1w@h+1h BY _time span=10m
+| tstats append=true prestats=true count where index=firewall earliest=@h-1h latest=@h+1h BY _time span=10m
 | eventstats avg(count) AS average, stdev(count) AS standev 
 | eval average=round(average,2) 
 | eval 
-    lowbound=average-(2.5*standev),
-    hibound=average+(2.5*standev) 
-| where count > hibound OR count < lowbound
+    lowbound=average-(2*standev),
+    hibound=average+(2*standev)  ```
+| where count > hibound OR count < lowbound ```
