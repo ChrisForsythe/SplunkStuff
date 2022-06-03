@@ -11,7 +11,7 @@ Modular inputs require a full Splunk Enterprise environment, and thus cannot
 run from a universal forwarder.  For example, the dbconnect app.
 
 ## Fractured Network
-If your network is broken^Bsegmented to the point where you cannot route from
+If your network is broken or segmented to the point where you cannot route from
 your universal forwarders to your indexer tier, then a heavy forwarder can
 act as a proxy.  In this case, always have at least as many heavy forwarders
 as you have indexers if at all possible.  You don't want the hourglass waist
