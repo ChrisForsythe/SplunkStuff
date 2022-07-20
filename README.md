@@ -6,9 +6,9 @@ SPL has the extension .spl, SimpleXML is .xml. Guides are in markdown. Anything 
 ## How to solve common problems
 
 | Problem  | Problem Description | Example code for solving |
-| ------------- | ------------- |
+| ------------- | ------------- | ------------- |
 | Proving a negative  | How do I count events and show 0 for something not present  | [Snippet for Proving a Negative](Snippets/proving_a_negative.spl)
-| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell |
 
 
 ## Useful links outside of this repository
