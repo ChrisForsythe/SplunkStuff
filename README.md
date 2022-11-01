@@ -3,14 +3,6 @@ A repository for sharing splunk code, tips, tricks and other items which help wi
 
 SPL has the extension .spl, SimpleXML is .xml. Guides are in markdown. Anything else should make sense.
 
-## Problem Descriptions and Links to Solutions
-
-| Problem  | Problem Description | Example code for solving |
-| ------------- | ------------- | ------------- |
-| Proving a negative  | How do I count events and show 0 for something not present  | [Snippet for Proving a Negative](Snippets/proving_a_negative.spl)
-| Content Cell  | Content Cell  | Content Cell |
-
-
 ## Useful links outside of this repository
 
 As we find useful links for Splunk topics, we will add them to this page.
