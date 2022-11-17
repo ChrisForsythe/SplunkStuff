@@ -26,3 +26,7 @@ As we find useful links for Splunk topics, we will add them to this page.
 ###### Splunk upgrade
 
 [Check app compatibility against a splunk version you would like to upgrade to](https://splunkbase.splunk.com/app/5698/)
+
+###### Splunk Management
+
+[Splunk Management](https://github.com/mmccul/splunk_mgmt)
