@@ -1,0 +1,24 @@
+| rest /servicesNS/-/-/data/transforms/lookups 
+| where title="LOOKUPDEFINITIONNAME" 
+| fields filename 
+| rex field=filename "(?<datefield>\d+)\.csv$$" 
+| rex field=datefield mode=sed "s/(\d{4})(\d{2})(\d{2})/\1-\2-\3/" 
+| eval dateunix=strptime(datefield, "%Y-%m-%d"),
+    date=strftime(dateunix, "%m/%d/%Y")
+| fields date
+
+
+```If you need to populate a dashboard to show what date a file is from for a lookup definition, put the date in YYYYmmdd format. Then modify the eval to fit into your localized format
+
+
+example:
+
+
+lookup definition name: myupdates
+lookup file name: updatesfile_from_client_20220421.csv
+
+With the above it would output as
+
+04/21/2022
+
+```
