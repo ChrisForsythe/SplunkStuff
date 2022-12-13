@@ -26,7 +26,7 @@ with a comment line indicating such.
 ```
 | makeresults count=100000
 | eval foo=random()%6
-\`\`\` End data mockup of d6 \`\`\`
+``` End data mockup of d6 ```
 | stats 
   count 
   BY foo
