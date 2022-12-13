@@ -16,12 +16,9 @@ Dashboard
     <element name="dashboard">
       <interleave>
         <ref name="BaseViewAttributes"/>
-        <zeroOrMore>
-          <ref name="SearchNode"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="Row"/>
-        </zeroOrMore>
+        <optional>
+          <attribute name="class"/>
+        </optional>
         <optional>
           <element name="label">
             <text/>
@@ -33,10 +30,35 @@ Dashboard
           </element>
         </optional>
         <optional>
+          <choice>
+            <!-- Deprecated. Use SearchNode instead. -->
+            <ref name="InlineSearchTemplate"/>
+            <interleave>
+              <ref name="SearchNode"/>
+              <optional>
+                <element name="fieldForValue">
+                  <text/>
+                </element>
+              </optional>
+              <optional>
+                <element name="fieldFormLabel">
+                  <text/>
+                </element>
+              </optional>
+            </interleave>
+          </choice>
+        </optional>
+        <optional>
+          <ref name="Fieldset"/>
+        </optional>
+        <zeroOrMore>
+          <ref name="Row"/>
+        </zeroOrMore>
+        <optional>
           <ref name="InitEventHandler"/>
         </optional>
       </interleave>
-    </element>
+    </element> 
   </define>
   <define name="BaseViewAttributes">
     <interleave>
